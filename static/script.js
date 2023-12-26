@@ -83,7 +83,7 @@ function moveToSigned(button) {
 
 // Function to update the timer countdown
 function updateCountdown() {
-    var targetDate = new Date("2023-12-27T00:00:00-03:00");
+    var targetDate = new Date("2024-01-01T00:00:00-03:00");
 
     // Update the countdown every second
     var countdownInterval = setInterval(function() {
