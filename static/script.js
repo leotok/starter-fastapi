@@ -22,6 +22,10 @@ function addToQueue() {
     var guestName = document.getElementById('guestName').value;
     var songName = document.getElementById('songName').value;
     
+    if (!guestName || !songName) {
+        return;
+    }
+
     var currentTime = new Date();
     var submittedTime = currentTime.toLocaleTimeString();
 
