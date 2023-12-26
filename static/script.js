@@ -44,7 +44,8 @@ function incrementQueueCounter() {
 function addToQueue() {
     var guestName = document.getElementById('guestName').value;
     var songName = document.getElementById('songName').value;
-    songsQueue.push({guest: guestName, song: songName});
+    
+    saveSong(guestName, songName);
 
     // Create a new row for the queue table
     var row = document.getElementById('queueBody').insertRow(-1);
