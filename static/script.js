@@ -26,7 +26,7 @@ function moveObjectBetweenLists(objectToRemove, sourceList, destinationList) {
 
 
 // Function to update the singed songs counter
-function incrementsingedCounter() {
+function incrementSingedCounter() {
     queueSize -= 1;
     singedSongs += 1;
     document.getElementById('queueSize').innerHTML = queueSize;
@@ -61,10 +61,10 @@ function moveToSinged(button) {
     var guestName = row.cells[1].innerHTML;
     var songName = row.cells[2].innerHTML;
 
-    checkSong(guestName, songsName);
+    checkSong(guestName, songName);
 
     moveObjectBetweenLists({guest: guestName, song: songName, songsQueue, songsSinged});
-    incrementsingedCounter();
+    incrementSingedCounter();
 }
 
 function saveSong(guest, song) {
