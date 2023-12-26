@@ -61,6 +61,8 @@ function moveToSinged(button) {
     var guestName = row.cells[1].innerHTML;
     var songName = row.cells[2].innerHTML;
 
+    checkSong(guestName, songsName);
+
     moveObjectBetweenLists({guest: guestName, song: songName, songsQueue, songsSinged});
     incrementsingedCounter();
 }
