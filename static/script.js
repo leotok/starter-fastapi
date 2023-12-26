@@ -2,7 +2,7 @@
 var queueSize = 0;
 var singedSongs = 0;
 var songsQueue = [];
-var songSinged = [];
+var songsSinged = [];
 
 function moveObjectBetweenLists(objectToRemove, sourceList, destinationList) {
     // Find the index of the object to remove in the source list
@@ -47,19 +47,6 @@ function addToQueue() {
     
     saveSong(guestName, songName);
 
-    // Create a new row for the queue table
-    var row = document.getElementById('queueBody').insertRow(-1);
-    var timeCell = row.insertCell(0);
-    var guestCell = row.insertCell(1);
-    var songCell = row.insertCell(2);
-    var actionCell = row.insertCell(3);
-
-    var currentTime = new Date();
-    timeCell.innerHTML = currentTime.toLocaleTimeString();
-    guestCell.innerHTML = guestName;
-    songCell.innerHTML = songName;
-    actionCell.innerHTML = '<button onclick="moveToSinged(this)">Check</button>';
-
     // Clear the form fields
     document.getElementById('guestName').value = '';
     document.getElementById('songName').value = '';
@@ -74,33 +61,7 @@ function moveToSinged(button) {
     var guestName = row.cells[1].innerHTML;
     var songName = row.cells[2].innerHTML;
 
-    moveObjectBetweenLists({guest: guestName, song: songName, songsQueue, songSinged});
-
-    // Create a new row for the singed table
-    var singedRow = document.getElementById('singedBody').insertRow(0);
-    var submittedTimeCell = singedRow.insertCell(0);
-    var guestCell = singedRow.insertCell(1);
-    var songCell = singedRow.insertCell(2);
-    var checkedTimeCell = singedRow.insertCell(3);
-
-    var currentTime = new Date();
-    var checkedTime = currentTime.toLocaleTimeString();
-
-    submittedTimeCell.innerHTML = submittedTime;
-    guestCell.innerHTML = guestName;
-    songCell.innerHTML = songName;
-    checkedTimeCell.innerHTML = checkedTime;
-
-    // Add a class to style the checked rows differently
-    singedRow.classList.add('checked-row');
-
-    // Clear the form fields
-    document.getElementById('guestName').value = '';
-    document.getElementById('songName').value = '';
-
-    // Remove the row from the queue table
-    row.remove();
-
+    moveObjectBetweenLists({guest: guestName, song: songName, songsQueue, songsSinged});
     incrementsingedCounter();
 }
 
@@ -123,12 +84,34 @@ function saveSong(guest, song) {
         });
 }
 
+function checkSong(guest, song) {
+    var apiUrl = '/song/check?guest=' + encodeURIComponent(guest) + '&song=' + encodeURIComponent(song);
+
+    fetch(apiUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Process the data returned from the API
+            console.log('API Response:', data);
+        })
+        .catch(error => {
+            console.error('Error during API request:', error);
+        });
+}
+
 function renderSongs() {
-    var table = document.getElementById('queueBody');
-    table.innerHTML = "";
+    var queueTable = document.getElementById('queueBody');
+    queueTable.innerHTML = "";
+
+    var singedTable = document.getElementById('singedBody');
+    singedTable.innerHTML = "";
 
     songsQueue.forEach(element => {
-        var row = document.getElementById('queueBody').insertRow(-1);
+        var row = queueTable.insertRow(-1);
         var timeCell = row.insertCell(0);
         var guestCell = row.insertCell(1);
         var songCell = row.insertCell(2);
@@ -139,6 +122,26 @@ function renderSongs() {
         guestCell.innerHTML = element["guest"];
         songCell.innerHTML = element["song"];
         actionCell.innerHTML = '<button onclick="moveToSinged(this)">Check</button>';
+    });
+
+    songsSinged.forEach(element => {
+        // Create a new row for the singed table
+        var singedRow = singedTable.insertRow(0);
+        var submittedTimeCell = singedRow.insertCell(0);
+        var guestCell = singedRow.insertCell(1);
+        var songCell = singedRow.insertCell(2);
+        var checkedTimeCell = singedRow.insertCell(3);
+
+        var currentTime = new Date();
+        var checkedTime = currentTime.toLocaleTimeString();
+
+        submittedTimeCell.innerHTML = submittedTime;
+        guestCell.innerHTML = guestName;
+        songCell.innerHTML = songName;
+        checkedTimeCell.innerHTML = checkedTime;
+
+        // Add a class to style the checked rows differently
+        singedRow.classList.add('checked-row');
     });
 }
 
