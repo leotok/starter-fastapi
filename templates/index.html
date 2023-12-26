@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
+    <title>Ano Novo 2024</title>
+</head>
+<body>
+
+<div class="container">
+    <h1>🥂 🎉 🎇 Ano Novo 2024 na Casa do Leo 🎆 🥳 🍻</h1>
+
+    <div class="counter-container">
+        <p>Fila de espera de <span id="queueSize">0</span> músicas</p>
+        <p>Já cantamos <span id="signedSongs">0</span> músicas</p>
+        <p id="countdown">Contagem regressiva para a virada: </p>
+    </div>
+
+    <!-- Form for submitting guest name and song name -->
+    <form id="karaokeForm">
+        <label for="guestName">Convidado:</label>
+        <input type="text" id="guestName" required>
+
+        <label for="songName">Música:</label>
+        <input type="text" id="songName" required>
+
+        <button type="button" onclick="addToQueue()">Adicionar à fila</button>
+    </form>
+
+    <!-- Table for displaying requests queue -->
+    <h2>Fila de espera</h2>
+    <table id="queueTable" class="now-playing">
+        <thead>
+            <tr>
+                <th>Enviada às</th>
+                <th>Convidado</th>
+                <th>Música</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+        <tbody id="queueBody"></tbody>
+    </table>
+
+    <!-- Table for displaying already signed -->
+    <h2>Músicas já cantadas</h2>
+    <table id="signedTable">
+        <thead>
+            <tr>
+                <th>Enviada às</th>
+                <th>Convidado</th>
+                <th>Música</th>
+                <th>Cantada às</th>
+            </tr>
+        </thead>
+        <tbody id="signedBody"></tbody>
+    </table>
+</div>
+
+<script src="{{ url_for('static', path='/script.js') }}"></script>
+</body>
+</html>
