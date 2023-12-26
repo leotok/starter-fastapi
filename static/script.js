@@ -124,10 +124,10 @@ function saveSong(guest, song) {
 }
 
 function renderSongs() {
-    songsQueue.forEach(element => {
-        var table = document.getElementById('queueBody');
-        table.innerHTML = "";
+    var table = document.getElementById('queueBody');
+    table.innerHTML = "";
 
+    songsQueue.forEach(element => {
         var row = document.getElementById('queueBody').insertRow(-1);
         var timeCell = row.insertCell(0);
         var guestCell = row.insertCell(1);
