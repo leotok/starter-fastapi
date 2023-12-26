@@ -4,26 +4,6 @@ var singedSongs = 0;
 var songsQueue = [];
 var songsSinged = [];
 
-function moveObjectBetweenLists(objectToRemove, sourceList, destinationList) {
-    // Find the index of the object to remove in the source list
-    const indexToRemove = sourceList.findIndex(obj => obj === objectToRemove);
-
-    // If the object is found in the source list
-    if (indexToRemove !== -1) {
-        // Remove the object from the source list
-        const removedObject = sourceList.splice(indexToRemove, 1)[0];
-
-        // Add the removed object to the destination list
-        destinationList.push(removedObject);
-
-        // Optionally, you can return the removed object
-        return removedObject;
-    } else {
-        console.warn('Object not found in the source list');
-        return null; // Object not found
-    }
-}
-
 
 // Function to update the singed songs counter
 function incrementSingedCounter() {
@@ -62,8 +42,6 @@ function moveToSinged(button) {
     var songName = row.cells[2].innerHTML;
 
     checkSong(guestName, songName);
-
-    moveObjectBetweenLists({guest: guestName, song: songName, songsQueue, songsSinged});
     incrementSingedCounter();
 }
 
