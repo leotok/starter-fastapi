@@ -19,11 +19,11 @@ class Item(BaseModel):
     item_id: int
 
 
-def check_signed(guest, song):
+def check_singed(guest, song):
     songs = get_songs()
     songs["queue"] = [s for s in songs["queue"] if s["guest"] != guest and s["song"] != song]
     checkd_song = [s for s in songs["queue"] if s["guest"] == guest and s["song"] == song]
-    songs["signed"].extend(checkd_song)
+    songs["singed"].extend(checkd_song)
     s3.put_object(
         Body=json.dumps(songs),
         Bucket="cyclic-ruby-confused-viper-sa-east-1",
@@ -48,18 +48,18 @@ def get_songs():
         return json.loads(songs_file['Body'].read())  
     except:
         pass
-    return {"queue": [], "signed": []}
+    return {"queue": [], "singed": []}
 
 def reset_songs():
     s3.put_object(
-        Body=json.dumps({"queue": [], "signed": []}),
+        Body=json.dumps({"queue": [], "singed": []}),
         Bucket="cyclic-ruby-confused-viper-sa-east-1",
         Key="songs_list.json"
     )
 
 @app.get("/song/check")
 async def check_sing_route(request: Request, guest: str, song: str):
-    check_signed(guest, song)
+    check_singed(guest, song)
     return {
         "msg": "Song checked",
         "payload": {

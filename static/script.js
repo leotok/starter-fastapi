@@ -1,6 +1,6 @@
 
 var queueSize = 0;
-var signedSongs = 0;
+var singedSongs = 0;
 var songsQueue = [];
 var songSinged = [];
 
@@ -25,12 +25,12 @@ function moveObjectBetweenLists(objectToRemove, sourceList, destinationList) {
 }
 
 
-// Function to update the signed songs counter
-function incrementSignedCounter() {
+// Function to update the singed songs counter
+function incrementsingedCounter() {
     queueSize -= 1;
-    signedSongs += 1;
+    singedSongs += 1;
     document.getElementById('queueSize').innerHTML = queueSize;
-    document.getElementById('signedSongs').innerHTML = signedSongs;
+    document.getElementById('singedSongs').innerHTML = singedSongs;
 }
 
 // Function to update the queue size counter
@@ -57,7 +57,7 @@ function addToQueue() {
     timeCell.innerHTML = currentTime.toLocaleTimeString();
     guestCell.innerHTML = guestName;
     songCell.innerHTML = songName;
-    actionCell.innerHTML = '<button onclick="moveToSigned(this)">Check</button>';
+    actionCell.innerHTML = '<button onclick="moveToSinged(this)">Check</button>';
 
     // Clear the form fields
     document.getElementById('guestName').value = '';
@@ -66,8 +66,8 @@ function addToQueue() {
     incrementQueueCounter();
 }
 
-// Function to move a row from the queue to the signed table
-function moveToSigned(button) {
+// Function to move a row from the queue to the singed table
+function moveToSinged(button) {
     var row = button.parentNode.parentNode;
     var submittedTime = row.cells[0].innerHTML;
     var guestName = row.cells[1].innerHTML;
@@ -75,12 +75,12 @@ function moveToSigned(button) {
 
     moveObjectBetweenLists({guest: guestName, song: songName, songsQueue, songSinged});
 
-    // Create a new row for the signed table
-    var signedRow = document.getElementById('signedBody').insertRow(0);
-    var submittedTimeCell = signedRow.insertCell(0);
-    var guestCell = signedRow.insertCell(1);
-    var songCell = signedRow.insertCell(2);
-    var checkedTimeCell = signedRow.insertCell(3);
+    // Create a new row for the singed table
+    var singedRow = document.getElementById('singedBody').insertRow(0);
+    var submittedTimeCell = singedRow.insertCell(0);
+    var guestCell = singedRow.insertCell(1);
+    var songCell = singedRow.insertCell(2);
+    var checkedTimeCell = singedRow.insertCell(3);
 
     var currentTime = new Date();
     var checkedTime = currentTime.toLocaleTimeString();
@@ -91,7 +91,7 @@ function moveToSigned(button) {
     checkedTimeCell.innerHTML = checkedTime;
 
     // Add a class to style the checked rows differently
-    signedRow.classList.add('checked-row');
+    singedRow.classList.add('checked-row');
 
     // Clear the form fields
     document.getElementById('guestName').value = '';
@@ -100,7 +100,7 @@ function moveToSigned(button) {
     // Remove the row from the queue table
     row.remove();
 
-    incrementSignedCounter();
+    incrementsingedCounter();
 }
 
 function saveSong(guest, song) {
@@ -137,7 +137,7 @@ function renderSongs() {
         timeCell.innerHTML = currentTime.toLocaleTimeString();
         guestCell.innerHTML = element["guest"];
         songCell.innerHTML = element["song"];
-        actionCell.innerHTML = '<button onclick="moveToSigned(this)">Check</button>';
+        actionCell.innerHTML = '<button onclick="moveToSinged(this)">Check</button>';
     });
 }
 
@@ -155,7 +155,8 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(data => {
                 // Process the data returned from the initial API call
-                songsQueue = data;
+                songsQueue = data.queue;
+                singedSongs = data.singed;
                 renderSongs();
                 console.log('Initial API Response:', data);
             })
