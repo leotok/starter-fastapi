@@ -57,7 +57,7 @@ def reset_songs():
     )
 
 @app.get("/song/check")
-async def check_sing_route(request: Request, guest: str, song: str)
+async def check_sing_route(request: Request, guest: str, song: str):
     check_signed(guest, song)
     return {
         "msg": "Song checked",
