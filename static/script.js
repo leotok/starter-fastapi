@@ -1,6 +1,3 @@
-
-var queueSize = 0;
-var singedSongs = 0;
 var songsQueue = [];
 var songsSinged = [];
 
@@ -25,7 +22,10 @@ function addToQueue() {
     var guestName = document.getElementById('guestName').value;
     var songName = document.getElementById('songName').value;
     
-    saveSong(guestName, songName);
+    var currentTime = new Date();
+    var submittedTime = currentTime.toLocaleTimeString();
+
+    saveSong(guestName, songName, submittedTime);
 
     // Clear the form fields
     document.getElementById('guestName').value = '';
@@ -40,13 +40,16 @@ function moveToSinged(button) {
     var submittedTime = row.cells[0].innerHTML;
     var guestName = row.cells[1].innerHTML;
     var songName = row.cells[2].innerHTML;
+    
+    var currentTime = new Date();
+    var checkedTime = currentTime.toLocaleTimeString();
 
-    checkSong(guestName, songName);
+    checkSong(guestName, songName, checkedTime);
     incrementSingedCounter();
 }
 
-function saveSong(guest, song) {
-    var apiUrl = '/song/save?guest=' + encodeURIComponent(guest) + '&song=' + encodeURIComponent(song);
+function saveSong(guest, song, submittedTime) {
+    var apiUrl = '/song/save?guest=' + encodeURIComponent(guest) + '&song=' + encodeURIComponent(song) + '&submitted_time=' + encodeURIComponent(submittedTime);
 
     fetch(apiUrl)
         .then(response => {
@@ -64,8 +67,8 @@ function saveSong(guest, song) {
         });
 }
 
-function checkSong(guest, song) {
-    var apiUrl = '/song/check?guest=' + encodeURIComponent(guest) + '&song=' + encodeURIComponent(song);
+function checkSong(guest, song, checkedTime) {
+    var apiUrl = '/song/check?guest=' + encodeURIComponent(guest) + '&song=' + encodeURIComponent(song) + '&checked_time=' + encodeURIComponent(checkedTime);
 
     fetch(apiUrl)
         .then(response => {
@@ -90,6 +93,9 @@ function renderSongs() {
     var singedTable = document.getElementById('singedBody');
     singedTable.innerHTML = "";
 
+    document.getElementById('queueSize').innerHTML = songsQueue.length;
+    document.getElementById('singedSongs').innerHTML = songsSinged.length;
+
     songsQueue.forEach(element => {
         var row = queueTable.insertRow(-1);
         var timeCell = row.insertCell(0);
@@ -97,11 +103,10 @@ function renderSongs() {
         var songCell = row.insertCell(2);
         var actionCell = row.insertCell(3);
     
-        var currentTime = new Date();
-        timeCell.innerHTML = currentTime.toLocaleTimeString();
+        timeCell.innerHTML = element["submitted_time"];
         guestCell.innerHTML = element["guest"];
         songCell.innerHTML = element["song"];
-        actionCell.innerHTML = '<button onclick="moveToSinged(this)">Check</button>';
+        actionCell.innerHTML = '<button onclick="moveToSinged(this)">Já cantou!</button>';
     });
 
     songsSinged.forEach(element => {
@@ -112,13 +117,10 @@ function renderSongs() {
         var songCell = singedRow.insertCell(2);
         var checkedTimeCell = singedRow.insertCell(3);
 
-        var currentTime = new Date();
-        var checkedTime = currentTime.toLocaleTimeString();
-
-        submittedTimeCell.innerHTML = checkedTime;
+        submittedTimeCell.innerHTML = element["submitted_time"];;
         guestCell.innerHTML = element["guest"];
         songCell.innerHTML = element["song"];
-        checkedTimeCell.innerHTML = checkedTime;
+        checkedTimeCell.innerHTML = element["checked_time"];;
 
         // Add a class to style the checked rows differently
         singedRow.classList.add('checked-row');

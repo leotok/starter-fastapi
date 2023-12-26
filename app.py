@@ -19,20 +19,21 @@ class Item(BaseModel):
     item_id: int
 
 
-def check_singed(guest, song):
+def check_singed(guest, song, checked_time):
     songs = get_songs()
-    checkd_song = [s for s in songs["queue"] if s["guest"] == guest and s["song"] == song]
+    checked_song = [s for s in songs["queue"] if s["guest"] == guest and s["song"] == song][0]
     songs["queue"] = [s for s in songs["queue"] if s["guest"] != guest and s["song"] != song]
-    songs["singed"].extend(checkd_song)
+    checked_song["checked_time"] = checked_time
+    songs["singed"].append(checked_song)
     s3.put_object(
         Body=json.dumps(songs),
         Bucket="cyclic-ruby-confused-viper-sa-east-1",
         Key="songs_list.json"
     )
 
-def save_song(guest, song):
+def save_song(guest, song, submitted_time):
     songs = get_songs()
-    songs["queue"].append({"guest": guest, "song": song})
+    songs["queue"].append({"guest": guest, "song": song, "submitted_time": submitted_time})
     s3.put_object(
         Body=json.dumps(songs),
         Bucket="cyclic-ruby-confused-viper-sa-east-1",
@@ -58,13 +59,14 @@ def reset_songs():
     )
 
 @app.get("/song/check")
-async def check_sing_route(request: Request, guest: str, song: str):
-    check_singed(guest, song)
+async def check_sing_route(request: Request, guest: str, song: str, checked_time: str):
+    check_singed(guest, song, checked_time)
     return {
         "msg": "Song checked",
         "payload": {
                 "guest": guest,
                 "song": song,
+                "checked_time": checked_time,
         }
     }
 
@@ -75,13 +77,14 @@ async def reset_songs_route(request: Request):
 
 
 @app.get("/song/save")
-async def save_song_route(request: Request, guest: str, song: str):
-    save_song(guest, song)
+async def save_song_route(request: Request, guest: str, song: str, submitted_time: str):
+    save_song(guest, song, submitted_time)
     return {
         "msg": "Saved",
         "payload": {
             "guest": guest,
             "song": song,
+            "submitted_time": submitted_time,
         }
     }
 
