@@ -137,7 +137,7 @@ function renderSongs() {
         var currentTime = new Date();
         var checkedTime = currentTime.toLocaleTimeString();
 
-        submittedTimeCell.innerHTML = submittedTime;
+        submittedTimeCell.innerHTML = checkedTime;
         guestCell.innerHTML = element["guest"];
         songCell.innerHTML = element["song"];
         checkedTimeCell.innerHTML = checkedTime;
