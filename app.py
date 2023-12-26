@@ -21,8 +21,8 @@ class Item(BaseModel):
 
 def check_singed(guest, song):
     songs = get_songs()
-    songs["queue"] = [s for s in songs["queue"] if s["guest"] != guest and s["song"] != song]
     checkd_song = [s for s in songs["queue"] if s["guest"] == guest and s["song"] == song]
+    songs["queue"] = [s for s in songs["queue"] if s["guest"] != guest and s["song"] != song]
     songs["singed"].extend(checkd_song)
     s3.put_object(
         Body=json.dumps(songs),
