@@ -138,8 +138,8 @@ function renderSongs() {
         var checkedTime = currentTime.toLocaleTimeString();
 
         submittedTimeCell.innerHTML = submittedTime;
-        guestCell.innerHTML = guestName;
-        songCell.innerHTML = songName;
+        guestCell.innerHTML = element["guest"];
+        songCell.innerHTML = element["song"];
         checkedTimeCell.innerHTML = checkedTime;
 
         // Add a class to style the checked rows differently
