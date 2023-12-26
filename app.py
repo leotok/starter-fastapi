@@ -22,7 +22,8 @@ class Item(BaseModel):
 def check_signed(guest, song):
     songs = get_songs()
     songs["queue"] = [s for s in songs["queue"] if s["guest"] != guest and s["song"] != song]
-    songs["signed"].append({"guest": guest, "song": song})
+    checkd_song = [s for s in songs["queue"] if s["guest"] == guest and s["song"] == song]
+    songs["signed"].extend(checkd_song)
     s3.put_object(
         Body=json.dumps(songs),
         Bucket="cyclic-ruby-confused-viper-sa-east-1",
