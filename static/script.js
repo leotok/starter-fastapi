@@ -127,6 +127,7 @@ function renderSongs() {
     });
 
     songsSinged.forEach(element => {
+        console.log("SINGED", element);
         // Create a new row for the singed table
         var singedRow = singedTable.insertRow(0);
         var submittedTimeCell = singedRow.insertCell(0);
@@ -144,12 +145,13 @@ function renderSongs() {
 
         // Add a class to style the checked rows differently
         singedRow.classList.add('checked-row');
+        console.log("ROW", singedRow);
     });
 }
 
 document.addEventListener('DOMContentLoaded', function () {
     // Function to make the initial API call
-    function initialApiCall() {
+    function updateSongs() {
         var apiUrl = '/song';
 
         fetch(apiUrl)
@@ -171,21 +173,13 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    // Function to continuously update the API call every second
-    function updateApiCall() {
-        // Replace 'https://example.com/api/endpoint' with your actual API URL
-        var apiUrl = 'https://example.com/api/endpoint';
-
-        setInterval(function () {
-            initialApiCall();
-        }, 1000); // Update every 1000 milliseconds (1 second)
-    }
-
     // Make the initial API call when the page loads
-    initialApiCall();
+    updateSongs();
 
     // Start continuously updating the API call every second
-    updateApiCall();
+    setInterval(function () {
+        updateSongs();
+    }, 1000);
 });
 
 
