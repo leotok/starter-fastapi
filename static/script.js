@@ -1,6 +1,28 @@
 
 var queueSize = 0;
 var signedSongs = 0;
+var songsQueue = [];
+var songSinged = [];
+
+function moveObjectBetweenLists(objectToRemove, sourceList, destinationList) {
+    // Find the index of the object to remove in the source list
+    const indexToRemove = sourceList.findIndex(obj => obj === objectToRemove);
+
+    // If the object is found in the source list
+    if (indexToRemove !== -1) {
+        // Remove the object from the source list
+        const removedObject = sourceList.splice(indexToRemove, 1)[0];
+
+        // Add the removed object to the destination list
+        destinationList.push(removedObject);
+
+        // Optionally, you can return the removed object
+        return removedObject;
+    } else {
+        console.warn('Object not found in the source list');
+        return null; // Object not found
+    }
+}
 
 
 // Function to update the signed songs counter
@@ -22,6 +44,7 @@ function incrementQueueCounter() {
 function addToQueue() {
     var guestName = document.getElementById('guestName').value;
     var songName = document.getElementById('songName').value;
+    songsQueue.push({guest: guestName, song: songName});
 
     // Create a new row for the queue table
     var row = document.getElementById('queueBody').insertRow(-1);
@@ -43,14 +66,14 @@ function addToQueue() {
     incrementQueueCounter();
 }
 
-// ... (previous JavaScript code) ...
-
 // Function to move a row from the queue to the signed table
 function moveToSigned(button) {
     var row = button.parentNode.parentNode;
     var submittedTime = row.cells[0].innerHTML;
     var guestName = row.cells[1].innerHTML;
     var songName = row.cells[2].innerHTML;
+
+    moveObjectBetweenLists({guest: guestName, song: songName, songsQueue, songSinged});
 
     // Create a new row for the signed table
     var signedRow = document.getElementById('signedBody').insertRow(0);
@@ -79,6 +102,65 @@ function moveToSigned(button) {
 
     incrementSignedCounter();
 }
+
+function saveSong(guest, song) {
+    var apiUrl = '/song/save?guest=' + encodeURIComponent(guest) + '&song=' + encodeURIComponent(song);
+
+    fetch(apiUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Process the data returned from the API
+            console.log('API Response:', data);
+        })
+        .catch(error => {
+            console.error('Error during API request:', error);
+        });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Function to make the initial API call
+    function initialApiCall() {
+        var apiUrl = '/song';
+
+        fetch(apiUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Process the data returned from the initial API call
+                songsQueue = data;
+                console.log('Initial API Response:', data);
+            })
+            .catch(error => {
+                console.error('Error during initial API request:', error);
+            });
+    }
+
+    // Function to continuously update the API call every second
+    function updateApiCall() {
+        // Replace 'https://example.com/api/endpoint' with your actual API URL
+        var apiUrl = 'https://example.com/api/endpoint';
+
+        setInterval(function () {
+            initialApiCall();
+        }, 1000); // Update every 1000 milliseconds (1 second)
+    }
+
+    // Make the initial API call when the page loads
+    initialApiCall();
+
+    // Start continuously updating the API call every second
+    updateApiCall();
+});
+
 
 
 // Function to update the timer countdown
