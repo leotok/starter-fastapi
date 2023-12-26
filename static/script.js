@@ -122,6 +122,25 @@ function saveSong(guest, song) {
         });
 }
 
+function renderSongs() {
+    songsQueue.forEach(element => {
+        var table = document.getElementById('queueBody');
+        table.innerHTML = "";
+
+        var row = document.getElementById('queueBody').insertRow(-1);
+        var timeCell = row.insertCell(0);
+        var guestCell = row.insertCell(1);
+        var songCell = row.insertCell(2);
+        var actionCell = row.insertCell(3);
+    
+        var currentTime = new Date();
+        timeCell.innerHTML = currentTime.toLocaleTimeString();
+        guestCell.innerHTML = element["guest"];
+        songCell.innerHTML = element["song"];
+        actionCell.innerHTML = '<button onclick="moveToSigned(this)">Check</button>';
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     // Function to make the initial API call
     function initialApiCall() {
@@ -137,6 +156,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 // Process the data returned from the initial API call
                 songsQueue = data;
+                renderSongs();
                 console.log('Initial API Response:', data);
             })
             .catch(error => {
