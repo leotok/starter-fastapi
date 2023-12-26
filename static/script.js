@@ -127,7 +127,6 @@ function renderSongs() {
     });
 
     songsSinged.forEach(element => {
-        console.log("SINGED", element);
         // Create a new row for the singed table
         var singedRow = singedTable.insertRow(0);
         var submittedTimeCell = singedRow.insertCell(0);
@@ -145,7 +144,6 @@ function renderSongs() {
 
         // Add a class to style the checked rows differently
         singedRow.classList.add('checked-row');
-        console.log("ROW", singedRow);
     });
 }
 
@@ -164,9 +162,8 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 // Process the data returned from the initial API call
                 songsQueue = data.queue;
-                singedSongs = data.singed;
+                songsSinged = data.singed;
                 renderSongs();
-                console.log('Initial API Response:', data);
             })
             .catch(error => {
                 console.error('Error during initial API request:', error);
