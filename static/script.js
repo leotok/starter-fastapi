@@ -47,6 +47,7 @@ function saveSong(guest, song, submittedTime) {
         .then(data => {
             // Process the data returned from the API
             console.log('API Response:', data);
+            updateSongs();
         })
         .catch(error => {
             console.error('Error during API request:', error);
@@ -66,6 +67,7 @@ function checkSong(guest, song, checkedTime) {
         .then(data => {
             // Process the data returned from the API
             console.log('API Response:', data);
+            updateSongs();
         })
         .catch(error => {
             console.error('Error during API request:', error);
@@ -143,10 +145,6 @@ document.addEventListener('DOMContentLoaded', function () {
     setInterval(function () {
         updateSongs();
     }, 5000);
-
-    setInterval(function () {
-        renderSongs();
-    }, 1000);
 });
 
 
