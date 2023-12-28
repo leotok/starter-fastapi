@@ -2,21 +2,6 @@ var songsQueue = [];
 var songsSinged = [];
 
 
-// Function to update the singed songs counter
-function incrementSingedCounter() {
-    queueSize -= 1;
-    singedSongs += 1;
-    document.getElementById('queueSize').innerHTML = queueSize;
-    document.getElementById('singedSongs').innerHTML = singedSongs;
-}
-
-// Function to update the queue size counter
-function incrementQueueCounter() {
-    queueSize += 1;
-    document.getElementById('queueSize').innerHTML = queueSize;
-}
-
-
 // Function to add a new request to the queue
 function addToQueue() {
     var guestName = document.getElementById('guestName').value;
@@ -34,8 +19,6 @@ function addToQueue() {
     // Clear the form fields
     document.getElementById('guestName').value = '';
     document.getElementById('songName').value = '';
-
-    incrementQueueCounter();
 }
 
 // Function to move a row from the queue to the singed table
@@ -49,7 +32,6 @@ function moveToSinged(button) {
     var checkedTime = currentTime.toLocaleTimeString();
 
     checkSong(guestName, songName, checkedTime);
-    incrementSingedCounter();
 }
 
 function saveSong(guest, song, submittedTime) {
@@ -131,35 +113,39 @@ function renderSongs() {
     });
 }
 
+
+function updateSongs() {
+    var apiUrl = '/song';
+
+    fetch(apiUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Process the data returned from the initial API call
+            songsQueue = data.queue;
+            songsSinged = data.singed;
+            renderSongs();
+        })
+        .catch(error => {
+            console.error('Error during initial API request:', error);
+        });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
-    // Function to make the initial API call
-    function updateSongs() {
-        var apiUrl = '/song';
-
-        fetch(apiUrl)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Process the data returned from the initial API call
-                songsQueue = data.queue;
-                songsSinged = data.singed;
-                renderSongs();
-            })
-            .catch(error => {
-                console.error('Error during initial API request:', error);
-            });
-    }
-
     // Make the initial API call when the page loads
     updateSongs();
 
     // Start continuously updating the API call every second
     setInterval(function () {
         updateSongs();
+    }, 5000);
+
+    setInterval(function () {
+        renderSongs();
     }, 1000);
 });
 
@@ -187,7 +173,7 @@ function updateCountdown() {
             clearInterval(countdownInterval); // Stop the interval when the countdown expires
             document.getElementById('countdown').innerHTML = 'Countdown expired!';
         }
-    }, 1000); // Update every 1000 milliseconds (1 second)
+    }, 1000); // Update every 1 second
 }
 // Helper function to format time values with leading zeros
 function formatTime(value) {
